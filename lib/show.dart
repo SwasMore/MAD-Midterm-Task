@@ -91,7 +91,8 @@ class _ListViewPageState extends State<ListViewPage> {
         backgroundColor: Colors.blueGrey,
         title: const Text(
           'List View',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600),
         ),
       ),
       body: ListView.builder(
@@ -143,15 +144,17 @@ class _CounterPageState extends State<CounterPage> {
         backgroundColor: Colors.blueGrey,
         title: const Text(
           'Counter',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700),
         ),
       ),
       body: Center(
-        child: Text('Counter: $_counter', style: TextStyle(fontSize: 24)),
+        child: Text('Counter: $_counter',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.blueGrey),
       ),
     );
   }
