@@ -74,9 +74,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blueGrey,
         title: const Text(
-          'Hello There!!',
+          'Registration',
           style: TextStyle(color: Colors.white),
         ),
         actions: [
@@ -177,6 +177,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 30,
             ),
             ElevatedButton(
+                style: buttonStyle,
                 onPressed: () {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => HomePage()));
@@ -188,4 +189,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
+
+  ButtonStyle buttonStyle = ButtonStyle(
+      shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)))),
+      backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+      textStyle: MaterialStateProperty.all(const TextStyle(
+          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+      padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 20, vertical: 15)));
 }

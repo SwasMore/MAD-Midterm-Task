@@ -86,7 +86,14 @@ class _ListViewPageState extends State<ListViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('List View')),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey,
+        title: const Text(
+          'List View',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: ListView.builder(
         itemCount: _items.length,
         itemBuilder: (context, index) {
@@ -131,7 +138,14 @@ class _CounterPageState extends State<CounterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Counter')),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey,
+        title: const Text(
+          'Counter',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Center(
         child: Text('Counter: $_counter', style: TextStyle(fontSize: 24)),
       ),
