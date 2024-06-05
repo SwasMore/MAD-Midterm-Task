@@ -83,7 +83,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           IconButton(
             onPressed: () {},
             icon: const Icon(
-              Icons.favorite,
+              Icons.logout_outlined,
               color: Colors.white,
             ),
           )
@@ -155,6 +155,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     password = value;
                   });
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter password';
+                  } else if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   label: Text('Password'),
                   icon: Icon(Icons.key),
@@ -165,14 +173,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             SizedBox(
               height: 30,
             ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //    Navigator.of(context).push(MaterialPageRoute(
-            //           builder: (context) => const ShowScreen()));
 
-            //   },
-            //   child: Text('Register'),
-            // ),
             SizedBox(
               height: 30,
             ),
