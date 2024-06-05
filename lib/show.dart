@@ -36,6 +36,17 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
+        backgroundColor: const Color.fromARGB(255, 133, 169, 187),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey[400],
+        selectedIconTheme: IconThemeData(color: Colors.white, size: 30),
+        unselectedIconTheme: IconThemeData(color: Colors.grey[400], size: 25),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        unselectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -44,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.countertops),
             label: 'Counter',
-          )
+          ),
         ],
       ),
     );
@@ -88,21 +99,51 @@ class _ListViewPageState extends State<ListViewPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Color.fromARGB(255, 133, 169, 187),
         title: const Text(
           'List View',
           style: TextStyle(
               color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600),
         ),
       ),
-      body: ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_items[index]['title']),
-            subtitle: Text(_items[index]['body']),
-          );
-        },
+      body: Container(
+        color: const Color.fromARGB(
+            255, 175, 211, 228), // Set your desired background color here
+        child: _items.isNotEmpty
+            ? ListView.builder(
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        _items[index]['title'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Text(_items[index]['body']),
+                    ),
+                  );
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }
@@ -141,16 +182,22 @@ class _CounterPageState extends State<CounterPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Color.fromARGB(255, 78, 148, 206),
         title: const Text(
           'Counter',
           style: TextStyle(
               color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700),
         ),
       ),
-      body: Center(
-        child: Text('Counter: $_counter',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+      body: Container(
+        color: Color.fromARGB(
+            255, 188, 207, 220), // Set your desired background color here
+        child: Center(
+          child: Text(
+            'Counter: $_counter',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,

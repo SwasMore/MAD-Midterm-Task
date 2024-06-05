@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/loginUser.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter_application_1/show.dart';
-
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class RegistrationScreen extends StatefulWidget {
@@ -15,58 +11,51 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  late String userName = '';
-  late String email = '';
-  late String password = '';
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _mobileController = TextEditingController();
+  final _photoController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  late String userNameError = '';
+  Future<void> _register() async {
+    if (_formKey.currentState!.validate()) {
+      final response = await http.post(
+        Uri.parse(
+            'https://task-management-backend-vhcq.onrender.com/api/v1/registration'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': _emailController.text,
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'mobile': _mobileController.text,
+          'photo': _photoController.text,
+          'password': _passwordController.text,
+        }),
+      );
 
-  Future<void> handleLoginPress() async {
-    //await
-    print('email: $email');
-    print('password : $password');
-    if (!EmailValidator.validate(email)) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Warning!!'),
-            icon: Icon(Icons.warning),
-            content: Container(
-              child: Text('Invalid Email!! PLease check your email '),
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
             ),
           );
-        },
-      );
-      return;
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Registration failed: ${data['message']}')));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Error: ${response.statusCode}, ${response.body}')));
+      }
     }
-    print('Sending login request....');
-
-    Uri uri = Uri.parse(
-        'https://task-management-backend-vhcq.onrender.com/api/v1/registration');
-
-    var payload = {
-      'email': email,
-      'password': password,
-    };
-
-    http.Response response = await http.post(uri, body: payload);
-    print("login status code: ${response.statusCode}");
-    print("login response body: ${response.body}");
-    dynamic decoded = json.decode(response.body);
-    print(decoded['data']);
-
-    LoginUser loginUser = LoginUser.fromJson(decoded['data']);
-    print(loginUser.email);
-    print(loginUser.firstName);
-    print(loginUser.lastName);
-    print(loginUser.mobile);
-    print(loginUser.photo);
-    print(loginUser.password);
-
-    print('token: ${decoded['token']}');
-
-    //Navigator.of(context).pushNamed('/home');
   }
 
   @override
@@ -90,102 +79,106 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text(
-              'Registration',
-              style: GoogleFonts.concertOne(
-                textStyle: TextStyle(fontSize: 45, color: Colors.blueGrey),
-                fontWeight: FontWeight.w100,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-
-            TextFormField(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                controller: _emailController,
                 style: TextStyle(fontSize: 16),
-                onChanged: (value) {
-                  print('First Name : $value');
-                  setState(() {
-                    email = value;
-                  });
-                },
                 decoration: InputDecoration(
                     label: Text('Email'),
                     icon: Icon(Icons.email),
                     hintText: 'Enter email',
-                    hintStyle: TextStyle(color: Colors.grey))),
-            TextFormField(
+                    hintStyle: TextStyle(color: Colors.grey)),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter email';
+                  } else if (!value.contains('@')) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _firstNameController,
                 style: TextStyle(fontSize: 16),
-                onChanged: (value) {},
                 decoration: InputDecoration(
                     label: Text('First Name'),
                     icon: Icon(Icons.person),
                     hintText: 'Enter first name',
-                    hintStyle: TextStyle(color: Colors.grey))),
-            TextFormField(
+                    hintStyle: TextStyle(color: Colors.grey)),
+                validator: (value) =>
+                    value!.isEmpty ? 'Enter first name' : null,
+              ),
+              TextFormField(
+                controller: _lastNameController,
                 style: TextStyle(fontSize: 16),
-                onChanged: (value) {},
                 decoration: InputDecoration(
                     label: Text('Last Name'),
                     icon: Icon(Icons.person),
                     hintText: 'Enter Last name',
-                    hintStyle: TextStyle(color: Colors.grey))),
-            TextFormField(
+                    hintStyle: TextStyle(color: Colors.grey)),
+                validator: (value) => value!.isEmpty ? 'Enter last name' : null,
+              ),
+              TextFormField(
+                controller: _mobileController,
                 style: TextStyle(fontSize: 16),
-                onChanged: (value) {},
                 decoration: InputDecoration(
                     label: Text('Mobile'),
                     icon: Icon(Icons.mobile_screen_share),
                     hintText: 'Enter mobile no',
-                    hintStyle: TextStyle(color: Colors.grey))),
-            TextFormField(
+                    hintStyle: TextStyle(color: Colors.grey)),
+                validator: (value) =>
+                    value!.isEmpty ? 'Enter mobile number' : null,
+              ),
+              TextFormField(
+                controller: _photoController,
                 style: TextStyle(fontSize: 16),
-                onChanged: (value) {},
                 decoration: InputDecoration(
-                    label: Text('photo url'),
+                    label: Text('Photo URL'),
                     icon: Icon(Icons.picture_in_picture_outlined),
                     hintText: 'Enter photo',
-                    hintStyle: TextStyle(color: Colors.grey))),
-            TextFormField(
-                style: TextStyle(fontSize: 16),
-                onChanged: (value) {
-                  print('password : $value');
-                  setState(() {
-                    password = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter password';
-                  } else if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  label: Text('Password'),
-                  icon: Icon(Icons.key),
-                  hintText: 'Enter password',
-                  hintStyle: TextStyle(color: Colors.grey),
-                )),
-            //Text(userName)
-            SizedBox(
-              height: 30,
-            ),
+                    hintStyle: TextStyle(color: Colors.grey)),
+                validator: (value) => value!.isEmpty ? 'Enter photo URL' : null,
+              ),
+              TextFormField(
+                  controller: _passwordController,
+                  style: TextStyle(fontSize: 16),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter password';
+                    } else if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    label: Text('Password'),
+                    icon: Icon(Icons.key),
+                    hintText: 'Enter password',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  )),
+              //Text(userName)
+              SizedBox(
+                height: 30,
+              ),
 
-            SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
+              SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
                 style: buttonStyle,
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => HomePage()));
-                  //Navigator.of(context).pop();
-                },
-                child: Text('Register')),
-          ],
+                onPressed: _register,
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: Colors.white70, fontSize: 20),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -195,8 +188,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       shape: MaterialStateProperty.all(const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5)))),
       backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
-      textStyle: MaterialStateProperty.all(const TextStyle(
-          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
       padding: MaterialStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 20, vertical: 15)));
 }

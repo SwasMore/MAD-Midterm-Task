@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/registration.dart';
+import 'package:flutter_application_1/show.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
       home: const RegistrationScreen(),
       routes: {
         '/registration': (BuildContext context) => const RegistrationScreen(),
+        '/show': (BuildContext context) => HomePage(),
       },
     );
   }
